@@ -1,0 +1,142 @@
+/*
+ * Selection background
+ */
+.selectbox ::-moz-selection {
+	background: transparent;
+}
+
+.selectbox ::selection {
+	background: transparent;
+}
+
+.selectbox code::-moz-selection {
+	background: transparent;
+}
+
+.selectbox code::selection {
+	background: transparent;
+}
+
+/*
+ * Default
+ */
+.selectbox {
+	border: 1px solid #C0CAD5;
+	position: relative;
+	font: 11px/13px "Tahoma";
+	display: block;
+	text-align: left;
+	cursor: default;
+}
+
+.selectbox ol {
+	display: none;
+	position: absolute;
+	background: #FFFFFF;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	border: 1px solid #ADADAD;
+	border-width: 0 1px 1px 1px;
+	left: -1px;
+	top: 22px;
+	z-index: 1;
+	overflow: auto;
+	overflow-x: hidden;
+	opacity: 0.95;
+}
+
+.selectbox li {
+	border:1px solid #FFFFFF;
+	position: relative;
+	padding: 3px 6px;
+}
+
+.selectbox .li-hover {
+	background: none repeat scroll 0 0 #587DA1;
+	border: 1px solid #2A5883;
+	color: #FFFFFF;
+}
+
+.selectbox .title {
+	margin-right: 30px;
+	white-space: nowrap;
+}
+
+.selectbox .current .title {
+	margin: 4px 0 4px 5px;
+	padding-left: 2px;
+}
+
+.selectbox .current {
+	position: relative;
+	background: none repeat scroll 0 0 #FFFFFF;
+	height: 1%;
+	overflow: hidden;
+}
+
+.selectbox .down-arrow {
+	position: absolute;
+	top: 0;
+	right: 0;
+	background: url("down-arrow.gif") no-repeat scroll center center #FFFFFF;
+	border-left: 1px solid #FFFFFF;
+	cursor: default;
+	padding: 0;
+	width: 16px;
+	height: 100%;
+}
+
+.selectbox .current .down-arrow-hover {
+	background-color:#E1E8ED;
+	border-left:1px solid #D2DBE0;
+}
+
+/*
+ * Disabled
+ */
+.selectbox.disabled {
+	border: 1px solid #ADADAD;
+	color: #ADADAD;
+}
+
+.selectbox.disabled .current {
+	background-color: #EFEFEF;
+}
+.selectbox.disabled .down-arrow, .selectbox.disabled .current .down-arrow-hover {
+	background-color: #DFDFDF;
+	border-left: 1px solid #ADADAD;
+}
+
+/*
+ * List
+ */
+.selectbox.list {
+	border: none;
+}
+
+.selectbox.list ol {
+	position: relative;
+	display: block;
+	border-width: 1px;
+	left: 0;
+	top: 0;
+	z-index: 0;
+}
+
+.selectbox.list .current {
+	display: none;
+}
+
+/*
+ * List disabled
+ */
+.selectbox.list.disabled ol {
+	background-color: #EFEFEF;
+}
+.selectbox.list.disabled li {
+	border: 1px solid #EFEFEF;
+}
+.selectbox.list.disabled .li-hover {
+	border: 1px solid #2A5883;
+}

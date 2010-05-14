@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>jQuery SelectBox</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" href="selectbox.css" type="text/css" media="screen" charset="utf-8" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="jquery.selectbox.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+		$('select').selectbox();
+	});
+	</script>
+</head>
+
+<body>
+
+<table>
+	<tr>
+		<td>
+			<select name="sel_1">
+				<option value="0">- Не выбран -</option>
+				<option value="1">test_1</option>
+				<option value="2">test_2</option>
+				<option value="3">test_3</option>
+				<option value="4">test_4</option>
+				<option value="5">test_5</option>
+				<option value="6">test_6</option>
+				<option value="7">test_7</option>
+			</select>
+		</td>
+		<td>
+			<select name="sel_2" disabled="disabled">
+				<option value="0">- Не выбран -</option>
+				<option value="1">test_1</option>
+				<option value="2">test_2</option>
+				<option value="3" selected="selected">test_3</option>
+				<option value="4">test_4</option>
+				<option value="5">test_5</option>
+				<option value="6">test_6</option>
+				<option value="7">test_7</option>
+			</select>
+		</td>
+		<td>
+			<select name="sel_3" size="5" multiple="multiple">
+				<option value="1">test_1</option>
+				<option value="2">test_2</option>
+				<option value="3">test_3</option>
+				<option value="4">test_4</option>
+				<option value="5">test_5</option>
+				<option value="6">test_6</option>
+				<option value="7" selected="selected">test_7</option>
+			</select>
+		</td>
+	</tr>
+</table>
+
+<p>jQuery SelectBox</p>
+
+</body>
+</html>
