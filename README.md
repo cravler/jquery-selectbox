@@ -6,10 +6,11 @@ select elements into a dropdown menu which acts as a proxy to select element.
 
 ## Usage
 
-Obviously you will need [jQuery](http://jquery.com/) and the jQuery SelectBox plugin.
+Obviously you will need [jQuery](http://jquery.com/), [jQuery outside events](http://benalman.com/projects/jquery-outside-events-plugin/) and the jQuery SelectBox plugin.
 Add them to your web page:
 
     <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/jquery.ba-outside-events.min.js"></script>
     <script type="text/javascript" src="/js/jquery.selectbox.js"></script>
 
 You will also need to add the CSS file to make things look right:

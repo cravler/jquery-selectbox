@@ -1,5 +1,5 @@
 /*
-* jQuery SelectBox - v1.0 - 05/14/2010
+* jQuery SelectBox - v1.1 - 11/29/2010
 * http://github.com/cravler/jquery-selectbox/
 *
 * Copyright (c) 2010 "Cravler"
@@ -12,28 +12,29 @@
 			return;
 		}
 
-		var _this      = this;
-		var focused    = false;
-		var moved      = true;
-		var mouse_over = null;
+		var config    = $.selectboxConfig;
+		var _this     = this;
+		var focused   = false;
+		var moved     = true;
+		var mouseOver = null;
 
 		_this._onchange = _this.onchange; _this.onchange  = null;
 		_this._onclick  = _this.onclick;  _this.onclick   = null;
 
 		var list = (_this.size || _this.multiple) ? true : false;
 
-		var elem         = $(_this).hide().change(onchange_select);
-		var elem_width   = elem.width() + (list ? 5 : 0);
-		var selectbox    = elem.wrap('<div class="selectbox' + (list ? ' list' : '') + (_this.disabled ? ' disabled' : '') + '" style="width:' + elem_width + 'px;" />').parent('.selectbox');
-		var list_visible = list ? true : false;
-		var current_html = '<div class="current">' + '<div class="down-arrow">&nbsp;</div>' + '<div class="title">%default_content%</div>' + '</div>';
+		var elem        = $(_this).hide().change(onchangeSelect);
+		var elemWidth   = $.selectboxWidth(elem.width(), list);
+		var selectbox   = elem.wrap('<div class="' + config.className + (config.extraClassName ? ' ' + config.extraClassName : '') + (list ? ' list' : '') + (_this.disabled ? ' disabled' : '') + '" style="width:' + elemWidth + 'px;" />').parent('.' + config.className);
+		var listVisible = list ? true : false;
+		var currentHtml = '<div class="current">' + '<div class="down-arrow">&nbsp;</div>' + '<div class="title">%default_content%</div>' + '</div>';
 
 		// Wrap select tag and provide a default option
 		selectbox.append(
-			current_html.replace('%default_content%', selectbox.find('select option:selected').text())
+			currentHtml.replace('%default_content%', selectbox.find('select option:selected').text())
 		);
 
-		if( ! list && _this.disabled) {
+		if ( ! list && _this.disabled) {
 			return;
 		}
 		
@@ -42,41 +43,41 @@
 
 			$(this).find('.down-arrow').removeClass('down-arrow-hover');
 
-			if(typeof _this._onblur == 'function') {
+			if (typeof _this._onblur == 'function') {
 				_this._onblur();
 				_this.onblur  = _this._onblur;
 				_this._onblur = null;
 			}
 
 			focused = false;
-			if(typeof _this._onfocus == 'function') {
+			selectbox.removeClass('focus');
+			if (typeof _this._onfocus == 'function') {
 				_this.onfocus  = _this._onfocus;
 				_this._onfocus = null;
 			}
 			
-			if (list_visible) {
-
+			if (listVisible) {
 				if ( ! list) {
 					if ($.browser.msie && parseInt($.browser.version) == 7) {
-						$('.selectbox').each(function() {
+						$('.' + config.className).each(function() {
 							if ( ! $(this).hasClass('selected')) {
-								$('.selectbox').css('z-index', 0);
+								$('.' + config.className).css('z-index', 0);
 							}
 						});
 						selectbox.removeClass('selected');
 					}
 					dropdown.hide();
-					list_visible = false;
+					listVisible = false;
 				}
 
-				if(typeof _this.onblur == 'function') {
+				if (typeof _this.onblur == 'function') {
 					_this._onblur = _this.onblur;
 					_this.onblur  = null;
 				}
 
 				if ( ! list) {
 					focused = true;
-					if(typeof _this.onfocus == 'function') {
+					if (typeof _this.onfocus == 'function') {
 						_this._onfocus = _this.onfocus;
 						_this.onfocus  = null;
 					}
@@ -87,23 +88,23 @@
 		// Hover
 		if ( ! list) {
 			selectbox.hover(
-				function () {
+				function() {
 					$(this).find('.down-arrow').addClass('down-arrow-hover');
 				},
-				function () {
-					if (!list_visible) {
+				function() {
+					if ( ! listVisible) {
 						$(this).find('.down-arrow').removeClass('down-arrow-hover');
 					}
 				}
 			);
 		}
 
-		var dropdown = selectbox.append('<ol style="width:' + elem_width + 'px;" />').children('ol');
+		var dropdown = selectbox.append('<ol style="width:' + (elemWidth + config.extraListWidth) + 'px;" />').children('ol');
 
 		var size = _this.size ? _this.size : 20;
 		if (_this.options.length > size) {
 			dropdown.css({
-				"height"   : (size * 21) + "px"
+				"height" : (size * 21) + "px"
 			});
 		}
 
@@ -121,19 +122,19 @@
 				selectbox.children('ol').animate({scrollTop: '+=' + (li.offset().top - selectbox.children('ol').offset().top) + 'px'}, 0);
 			}
 
-			if(list && _this.disabled) {
+			if (list && _this.disabled) {
 				return;
 			}
 
-			li.hover(function () {
+			li.hover(function() {
 				if (moved && ! list) {
-					mouse_over = $(this).data('boxvalue');
+					mouseOver = $(this).data('boxvalue');
 					dropdown.find('li').each(function() {
 						$(this).removeClass('li-hover');
 					});
 					$(this).addClass('li-hover');
 				}
-			},function () {
+			},function() {
 				// unhover
 			}).mousemove(function() {
 				moved = true;
@@ -147,18 +148,16 @@
 			}).mouseup(function() {
 				option.mouseup();
 			}).click(function() {
-
 				if (list) {
-
 					focused = true;
-					if(typeof _this.onfocus == 'function') {
+					selectbox.addClass('focus');
+					if (typeof _this.onfocus == 'function') {
 						_this.onfocus();
 						_this._onfocus = _this.onfocus;
 						_this.onfocus  = null;
 					}
 
 					if (_this.multiple) {
-
 						if (typeof _this._onchange == 'function') {
 							_this._onchange();
 						}
@@ -190,7 +189,7 @@
 					elem.val($(this).data('boxvalue'));
 				}
 				
-				if(typeof _this.onblur == 'function') {
+				if (typeof _this.onblur == 'function') {
 					_this._onblur = _this.onblur;
 					_this.onblur  = null;
 				}
@@ -210,8 +209,8 @@
 		});
 
 		$(document).keydown(function(event) {
-			if(focused) {
-				if (list_visible && event.keyCode == '13') {
+			if (focused) {
+				if (listVisible && event.keyCode == '13') {
 					dropdown.find('li').each(function() {
 						if ($(this).hasClass('li-hover')) {
 							elem.val($(this).data('boxvalue')).change();
@@ -221,16 +220,15 @@
 					return false;
 				}
 				else if (event.keyCode == '38' || event.keyCode == '40') {
-
 					var prev     = null;
 					var next     = null;
-					var selected = mouse_over != null ? mouse_over : selectbox.find('select option:selected').val();
+					var selected = mouseOver != null ? mouseOver : selectbox.find('select option:selected').val();
 
-					moved      = false;
-					mouse_over = null;
+					moved     = false;
+					mouseOver = null;
 
 					dropdown.find('li').each(function() {
-						if(selected == $(this).data('boxvalue')) {
+						if (selected == $(this).data('boxvalue')) {
 							if (selected != selectbox.find('select option:first').val()) {
 								prev = $(this).prev();
 							}
@@ -241,7 +239,7 @@
 					});
 
 					if (event.keyCode == '38' && prev != null) {
-						if (list_visible) {
+						if (listVisible) {
 							dropdown.find('li').each(function() {
 								$(this).removeClass('li-hover');
 								if (prev.data('boxvalue') == $(this).data('boxvalue')) {
@@ -261,7 +259,7 @@
 						}
 					}
 					else if (event.keyCode == '40' && next != null) {
-						if (list_visible) {
+						if (listVisible) {
 							dropdown.find('li').each(function() {
 								$(this).removeClass('li-hover');
 								if (next.data('boxvalue') == $(this).data('boxvalue')) {
@@ -287,44 +285,43 @@
 		});
 
 		selectbox.find('.current').mousemove(function() {
-			if(typeof _this.onmousemove == 'function') {
+			if (typeof _this.onmousemove == 'function') {
 				_this.onmousemove();
 			}
 		}).mouseenter(function(){
-			if(typeof _this.onmouseover == 'function') {
+			if (typeof _this.onmouseover == 'function') {
 				_this.onmouseover();
 			}
 		}).mouseleave(function(){
-			if(typeof _this.onmouseout == 'function') {
+			if (typeof _this.onmouseout == 'function') {
 				_this.onmouseout();
 			}
 		}).mousedown(function() {
-			if(typeof _this.onmousedown == 'function') {
+			if (typeof _this.onmousedown == 'function') {
 				_this.onmousedown();
 			}
 		}).mouseup(function() {
-			if(typeof _this.onmouseup == 'function') {
+			if (typeof _this.onmouseup == 'function') {
 				_this.onmouseup();
 			}
 		}).click(function() {
-
 			focused = true;
-			if(typeof _this.onfocus == 'function') {
+			selectbox.addClass('focus');
+			if (typeof _this.onfocus == 'function') {
 				_this.onfocus();
 				_this._onfocus = _this.onfocus;
 				_this.onfocus  = null;
 			}
 
-			if(typeof _this._onclick == 'function') {
+			if (typeof _this._onclick == 'function') {
 				_this._onclick();
 			}
 
-			if (list_visible) {
-
+			if (listVisible) {
 				if ($.browser.msie && parseInt($.browser.version) == 7) {
-					$('.selectbox').each(function() {
+					$('.' + config.className).each(function() {
 						if ( ! $(this).hasClass('selected')) {
-							$('.selectbox').css('z-index', 0);
+							$('.' + config.className).css('z-index', 0);
 						}
 					});
 					selectbox.removeClass('selected');
@@ -332,26 +329,25 @@
 
 				if ( ! list) {
 					dropdown.hide();
-					list_visible = false;
+					listVisible = false;
 				}
 			}
 			else {
-
 				if ($.browser.msie && parseInt($.browser.version) == 7) {
 					selectbox.addClass('selected');
-					$('.selectbox').each(function() {
+					$('.' + config.className).each(function() {
 						if ( ! $(this).hasClass('selected')) {
 							$(this).css('z-index', -1);
 						}
 					});
 				}
 
-				list_visible = true;
+				listVisible = true;
 				dropdown.show();
 
 				dropdown.find('li').each(function() {
 					$(this).removeClass('li-hover');
-					if(selectbox.find('select option:selected').val() == $(this).data('boxvalue')) {
+					if (selectbox.find('select option:selected').val() == $(this).data('boxvalue')) {
 						$(this).addClass('li-hover');
 						selectbox.children('ol').animate({scrollTop: '+=' + ($(this).offset().top - selectbox.children('ol').offset().top) + 'px'}, 0);
 					}
@@ -361,38 +357,68 @@
 
 		return;
 
-		function onchange_select() {
+		function onchangeSelect() {
 			var title = $(this).find('option:selected').text();
 			if ( ! list) {
 				selectbox.children('ol').hide();
-				list_visible = false;
+				listVisible = false;
 			}
 			selectbox.find('.current .title').text(title);
 
-			if(typeof this._onchange == 'function') {
+			if (typeof this._onchange == 'function') {
 				this._onchange();
 			}
 
 			$(this).find('option:selected').click();
 
-			if(typeof this._onclick == 'function') {
+			if (typeof this._onclick == 'function') {
 				this._onclick();
 			}
 		}
 	};
 
-	$.fn.selectbox = function() {
+	$.selectboxWidth = function(elemWidth, list) {
+
+		var config = $.selectboxConfig;
+		var os     = navigator.platform;
+
+		if (os.indexOf("Mac") != -1) {
+			if ($.browser.mozilla && ! list) {
+				elemWidth += 27;
+			}
+
+			if ($.browser.webkit && list) {
+				elemWidth += 5;
+			}
+
+			if ( ! list) {
+				elemWidth -= 2;
+			}
+		}
+		else if (os.indexOf("Linux") != -1) {
+		}
+		else { // Win
+			if ($.browser.webkit) {
+				elemWidth += 23;
+			}
+		}
+
+		elemWidth += (list ? 5 : 0);
+
+		return elemWidth + config.extraWidth;
+	};
+
+	$.selectboxConfig = {};
+
+	$.fn.selectbox = function(config) {
+		var defaults = {
+			className: 'selectbox',
+			extraClassName: '',
+			extraWidth: 0,
+			extraListWidth: 0
+		};
+		$.selectboxConfig = $.extend({}, defaults, config);
 		this.each($.selectbox);
 		return this;
 	};
 })(jQuery);
-
-/*
-* jQuery outside events - v1.1 - 3/16/2010
-* http://benalman.com/projects/jquery-outside-events-plugin/
-*
-* Copyright (c) 2010 "Cowboy" Ben Alman
-* Dual licensed under the MIT and GPL licenses.
-* http://benalman.com/about/license/
-*/
-(function($,c,b){$.map("click dblclick mousemove mousedown mouseup mouseover mouseout change select submit keydown keypress keyup".split(" "),function(d){a(d)});a("focusin","focus"+b);a("focusout","blur"+b);$.addOutsideEvent=a;function a(g,e){e=e||g+b;var d=$(),h=g+"."+e+"-special-event";$.event.special[e]={setup:function(){d=d.add(this);if(d.length===1){$(c).bind(h,f)}},teardown:function(){d=d.not(this);if(d.length===0){$(c).unbind(h)}},add:function(i){var j=i.handler;i.handler=function(l,k){l.target=k;j.apply(this,arguments)}}};function f(i){$(d).each(function(){var j=$(this);if(this!==i.target&&!j.has(i.target).length){j.triggerHandler(e,[i.target])}})}}})(jQuery,document,"outside");
